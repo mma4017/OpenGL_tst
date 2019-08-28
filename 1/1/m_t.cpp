@@ -7,6 +7,9 @@
 
 using namespace std;
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+
+
 int main()
 {
     glfwInit();
@@ -38,13 +41,30 @@ int main()
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);		//前两个参数控制窗口左下角的位置。第三个和第四个参数控制渲染窗口的宽度和高度（像素）
 
+	//通过GLFW注册我们的函数至合适的回调
+	glfwSetKeyCallback(window, key_callback);
+
+
 	//不断绘制图像并能够接受用户输入
 	while(!glfwWindowShouldClose(window))	//glfwWindowShouldClose函数在我们每次循环的开始前检查一次GLFW是否被要求退出，如果是的话该函数返回true关闭应用程序
 	{
 		glfwPollEvents();	//glfwPollEvents函数检查有没有触发什么事件（比如键盘输入、鼠标移动等），然后调用对应的回调函数（可以通过回调方法手动设置）。我们一般在游戏循环的开始调用事件处理函数
+
+		//渲染指令处
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
 		glfwSwapBuffers(window);	//glfwSwapBuffers函数会交换颜色缓冲（它是一个储存着GLFW窗口每一个像素颜色的大缓冲）它在这一迭代中被用来绘制，并且将会作为输出显示在屏幕上
 	}
 
 	glfwTerminate();//释放GLFW分配的内存
     return 0;
 }
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    // 当用户按下ESC键,我们设置window窗口的WindowShouldClose属性为true
+    // 关闭应用程序
+    if(key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+}    
